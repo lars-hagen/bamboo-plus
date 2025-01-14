@@ -43,7 +43,7 @@ jobs:
           fi
           
           # Check userscript metadata
-          if ! grep -q "@name\s*Bamboo Plus" build/bamboo-plus.user.js || \
+          if ! grep -q "@name.*BambooHR Plus" build/bamboo-plus.user.js || \
              ! grep -q "@version" build/bamboo-plus.user.js || \
              ! grep -q "@description" build/bamboo-plus.user.js; then
             echo "❌ Build failed: Invalid userscript metadata"
