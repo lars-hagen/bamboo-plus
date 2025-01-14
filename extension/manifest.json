@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Bamboo Plus",
+  "version": "0.4",
+  "description": "Enhanced BambooHR experience with improved UI and smart features",
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.bamboohr.com/employees/timesheet/*"],
+      "js": ["bamboo-plus.user.js"]
+    }
+  ]
+} 

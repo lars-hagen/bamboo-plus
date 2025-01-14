@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      width: 300px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .title {
+      font-size: 18px;
+      font-weight: 500;
+      margin: 0;
+    }
+    .version {
+      color: #666;
+      font-size: 12px;
+    }
+    .update-available {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      padding: 12px;
+      margin: 12px 0;
+      display: none;
+    }
+    .update-available.show {
+      display: block;
+    }
+    button {
+      background: #0ea5e9;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      width: 100%;
+    }
+    button:hover {
+      background: #0284c7;
+    }
+    button:disabled {
+      background: #e5e7eb;
+      color: #9ca3af;
+      cursor: default;
+    }
+    .status {
+      color: #666;
+      font-size: 14px;
+      margin: 12px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 class="title">Bamboo Plus</h1>
+    <span class="version">v<span id="currentVersion">0.4</span></span>
+  </div>
+  
+  <div class="status" id="status">Checking for updates...</div>
+  
+  <div class="update-available" id="updateNotice">
+    <strong>Update Available!</strong>
+    <p style="margin: 8px 0;">Version <span id="newVersion"></span> is available.</p>
+    <button id="updateButton">Update Now</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html> 
