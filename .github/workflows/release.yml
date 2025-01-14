@@ -28,7 +28,8 @@ jobs:
       - name: Install dependencies
         run: |
           npm init -y
-          npm install --save-dev semantic-release @semantic-release/exec @semantic-release/github @semantic-release/git
+          npm install --save-dev semantic-release @semantic-release/exec @semantic-release/github @semantic-release/git --package-lock-only
+          npm ci
 
       - name: Release
         env:
