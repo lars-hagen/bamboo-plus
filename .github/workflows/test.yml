@@ -23,7 +23,7 @@ jobs:
           ./build.sh dev test-version
           
           # Verify build artifacts exist
-          if [ ! -f "bamboo-plus-v*.zip" ]; then
+          if [ -z "$(ls bamboo-plus-v*.zip 2>/dev/null)" ]; then
             echo "❌ Build failed: ZIP file not created"
             exit 1
           fi
