@@ -12,6 +12,14 @@ fi
 
 echo "Building version ${VERSION}..."
 
+# Validate userscript metadata
+if ! grep -q "@name.*Bamboo Plus" extension/bamboo-plus.user.js || \
+   ! grep -q "@version" extension/bamboo-plus.user.js || \
+   ! grep -q "@description" extension/bamboo-plus.user.js; then
+    echo "❌ Build failed: Missing required userscript metadata"
+    exit 1
+fi
+
 # Create build directory
 rm -rf build
 mkdir -p build
@@ -20,11 +28,11 @@ mkdir -p build
 cp -r extension/* build/
 
 # Update version in files
-sed -i "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" extension/manifest.json
-sed -i "s/@version.*/@version      ${VERSION}/" extension/bamboo-plus.user.js
+sed -i "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" build/manifest.json
+sed -i "s/@version.*/@version      ${VERSION}/" build/bamboo-plus.user.js
 
 # Copy userscript to root for semantic-release
-cp extension/bamboo-plus.user.js ./bamboo-plus.user.js
+cp build/bamboo-plus.user.js ./bamboo-plus.user.js
 
 # Create zip
 cd build
