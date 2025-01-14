@@ -19,14 +19,19 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Create package files
+        run: |
+          npm init -y
+          npm install --save-dev semantic-release @semantic-release/exec @semantic-release/github @semantic-release/git --package-lock-only
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "lts/*"
-       #   cache: 'npm'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --save-dev semantic-release @semantic-release/exec @semantic-release/github @semantic-release/git
+        run: npm ci
 
       - name: Release
         env:
