@@ -13,7 +13,7 @@ fi
 echo "Building version ${VERSION}..."
 
 # Validate userscript metadata
-if ! grep -q "@name.*Bamboo Plus" extension/bamboo-plus.user.js || \
+if ! grep -q "@name\s*Bamboo Plus" extension/bamboo-plus.user.js || \
    ! grep -q "@version" extension/bamboo-plus.user.js || \
    ! grep -q "@description" extension/bamboo-plus.user.js; then
     echo "❌ Build failed: Missing required userscript metadata"

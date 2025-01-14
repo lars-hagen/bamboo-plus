@@ -2,7 +2,7 @@ name: Test Build & Extension
 
 on:
   push:
-    branches: [ main, dev-new ]
+    branches: [ main, dev ]
   pull_request:
     types: [opened, synchronize, reopened]
     branches: [ main ]
@@ -18,7 +18,6 @@ jobs:
 
       - name: Test Build
         run: |
-          chmod +x build.sh
           ./build.sh dev
           
           # Verify build artifacts
@@ -44,7 +43,7 @@ jobs:
           fi
           
           # Check userscript metadata
-          if ! grep -q "@name.*Bamboo Plus" build/bamboo-plus.user.js || \
+          if ! grep -q "@name.*BambooHR Plus" build/bamboo-plus.user.js || \
              ! grep -q "@version" build/bamboo-plus.user.js || \
              ! grep -q "@description" build/bamboo-plus.user.js; then
             echo "❌ Build failed: Invalid userscript metadata"

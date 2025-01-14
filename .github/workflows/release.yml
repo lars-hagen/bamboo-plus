@@ -3,6 +3,9 @@ name: Release
 on:
   push:
     branches: [ main, dev ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [ main ]
 
 jobs:
   test:
@@ -13,6 +16,8 @@ jobs:
     name: Release
     needs: test
     runs-on: ubuntu-latest
+    # Only run release job on actual pushes, not PR events
+    if: github.event_name == 'push'
     permissions:
       contents: write
       issues: write
