@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Release
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
