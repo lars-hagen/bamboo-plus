@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Bamboo Plus",
-  "version": "1.0.0-dev.13-dev.20250114.191643.92e5c0b",
+  "version": "1.0.0-dev.14-dev.20250114.192241.ba35c14",
   "description": "Enhanced BambooHR experience with improved UI and smart features",
   "icons": {
     "48": "icons/icon48.png",
