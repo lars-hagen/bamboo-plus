@@ -31,6 +31,23 @@ Enhanced BambooHR experience with improved UI and smart features.
 - `main`: Production-ready code, used for releases
 - `dev`: Development branch, all feature branches merge here first
 
+### Building
+#### Development Build
+```bash
+./build.sh
+```
+This will:
+1. Create a dev version with timestamp
+2. Copy files to `build` directory
+3. Create a zip file
+4. Show instructions for loading in Chrome
+
+#### Production Build
+```bash
+./build.sh prod
+```
+This will create a production build with the version from manifest.json.
+
 ### Development Workflow
 1. Create a feature branch from `dev`:
    ```bash
@@ -52,24 +69,13 @@ Enhanced BambooHR experience with improved UI and smart features.
 
 4. Create a Pull Request to merge into `dev`
 5. After review and testing, merge into `dev`
-6. When ready for release, merge `dev` into `main` and create a new release
+6. When ready for release, merge `dev` into `main`
 
-### Creating a Release
-1. Ensure all changes are tested in `dev`
-2. Update version number in:
-   - manifest.json
-   - bamboo-plus.user.js
-3. Merge `dev` into `main`:
-   ```bash
-   git checkout main
-   git pull
-   git merge dev
-   git push
-   ```
-4. Create a new release on GitHub:
-   - Tag version with 'v' prefix (e.g., v0.5)
-   - Include changelog
-   - Attach extension files
+### Releases
+- Pushing to `main` automatically:
+  1. Creates a new release with the version from manifest.json
+  2. Builds and attaches the extension ZIP
+  3. Attaches the userscript file
 
 ### Local Development
 1. Clone the repository:
@@ -83,13 +89,14 @@ Enhanced BambooHR experience with improved UI and smart features.
    git checkout dev
    ```
 
-3. Load the extension in Chrome:
-   - Go to chrome://extensions/
-   - Enable Developer mode
-   - Load unpacked extension from the `extension` folder
+3. Create a dev build:
+   ```bash
+   ./build.sh
+   ```
 
-4. Make changes and test
-5. Create pull request when ready
+4. Load the extension from the `build` directory in Chrome
+5. Make changes and rebuild as needed
+6. Create pull request when ready
 
 ## Contributing
 1. Fork the repository
