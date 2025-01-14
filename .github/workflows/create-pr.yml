@@ -1,0 +1,60 @@
+name: Create PR from Dev to Main
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (optional)'
+        required: false
+        type: string
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: dev
+
+      - name: Get version from manifest
+        id: get_version
+        run: |
+          VERSION=$(grep '"version":' extension/manifest.json | cut -d'"' -f4)
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Run tests
+        uses: ./.github/workflows/test.yml
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get all commits since last PR merge to main
+          COMMITS=$(git log --format="%s" origin/main..dev)
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          echo "## Changes" >> $GITHUB_OUTPUT
+          echo "$COMMITS" | while read -r commit; do
+            echo "- $commit" >> $GITHUB_OUTPUT
+          done
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          base: main
+          branch: dev
+          title: "🚀 Release v${{ inputs.version || steps.get_version.outputs.version }}"
+          body: |
+            ## Release Details
+            Version: ${{ inputs.version || steps.get_version.outputs.version }}
+            
+            ${{ steps.changelog.outputs.CHANGELOG }}
+            
+            ## Checklist
+            - [ ] Tests passing
+            - [ ] Version updated
+            - [ ] Documentation updated
+          labels: |
+            release
+          draft: false 
