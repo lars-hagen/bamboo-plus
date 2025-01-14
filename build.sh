@@ -1,11 +1,13 @@
 #!/bin/bash
 
-# Get version from manifest.json
-VERSION=$(grep '"version":' manifest.json | cut -d'"' -f4)
 BUILD_TYPE=${1:-dev}  # Default to dev build if not specified
+VERSION=${2:-$(grep '"version":' manifest.json | cut -d'"' -f4)}  # Use provided version or get from manifest
 
 if [ "$BUILD_TYPE" = "dev" ]; then
-    VERSION="${VERSION}-dev.$(date +%Y%m%d.%H%M)"
+    # For dev builds: VERSION-dev.YYYYMMDD.HHMMSS.COMMIT_HASH
+    TIMESTAMP=$(date +%Y%m%d.%H%M%S)
+    COMMIT_HASH=$(git rev-parse --short HEAD)
+    VERSION="${VERSION}-dev.${TIMESTAMP}.${COMMIT_HASH}"
 fi
 
 echo "Building version ${VERSION}..."
@@ -17,16 +19,18 @@ mkdir -p build
 # Copy extension files
 cp -r extension/* build/
 
-# Update version in copied files
-sed -i '' "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" build/manifest.json
-sed -i '' "s/@version.*/@version      ${VERSION}/" build/bamboo-plus.user.js
+# Update version in files
+sed -i '' "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" manifest.json
+sed -i '' "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" extension/manifest.json
+sed -i '' "s/@version.*/@version      ${VERSION}/" bamboo-plus.user.js
+sed -i '' "s/@version.*/@version      ${VERSION}/" extension/bamboo-plus.user.js
 
 # Create zip
 cd build
-zip -r "../bamboo-plus-${VERSION}.zip" *
+zip -r "../bamboo-plus-v${VERSION}.zip" *
 cd ..
 
-echo "Build complete: bamboo-plus-${VERSION}.zip"
+echo "Build complete: bamboo-plus-v${VERSION}.zip"
 
 # For dev builds, offer to load in Chrome
 if [ "$BUILD_TYPE" = "dev" ]; then

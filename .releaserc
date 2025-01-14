@@ -1,0 +1,17 @@
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    ["@semantic-release/exec", {
+      "prepareCmd": "./build.sh prod ${nextRelease.version}",
+      "publishCmd": "echo 'Version ${nextRelease.version} is ready to be published'"
+    }],
+    ["@semantic-release/github", {
+      "assets": [
+        {"path": "bamboo-plus-v*.zip", "label": "Chrome Extension"},
+        {"path": "bamboo-plus.user.js", "label": "Userscript"}
+      ]
+    }]
+  ]
+} 
