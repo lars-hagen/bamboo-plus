@@ -1,8 +1,8 @@
 name: Maintain Draft PR
 
-on:
-  push:
-    branches: [ dev ]
+# on:
+#   push:
+#     branches: [ dev ]
 
 jobs:
   update-pr:
@@ -64,4 +64,4 @@ jobs:
           branch: dev
           base: main
           draft: true
-          delete-branch: false 
+          delete-branch: false
