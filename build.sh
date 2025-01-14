@@ -20,8 +20,8 @@ mkdir -p build
 cp -r extension/* build/
 
 # Update version in files
-sed -i '' "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" extension/manifest.json
-sed -i '' "s/@version.*/@version      ${VERSION}/" extension/bamboo-plus.user.js
+sed -i "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" extension/manifest.json
+sed -i "s/@version.*/@version      ${VERSION}/" extension/bamboo-plus.user.js
 
 # Create zip
 cd build
