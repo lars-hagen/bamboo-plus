@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         BambooHR Plus
+// @name         Bamboo Plus
 // @namespace    https://github.com/lars-hagen/bamboo-plus
 // @version      1.0.0-dev.19-dev.20250114.202218.8615cc2
 // @description  Enhanced BambooHR experience with improved UI and smart features
