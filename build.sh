@@ -23,6 +23,9 @@ cp -r extension/* build/
 sed -i "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" extension/manifest.json
 sed -i "s/@version.*/@version      ${VERSION}/" extension/bamboo-plus.user.js
 
+# Copy userscript to root for semantic-release
+cp extension/bamboo-plus.user.js ./bamboo-plus.user.js
+
 # Create zip
 cd build
 zip -r "../bamboo-plus-v${VERSION}.zip" *
