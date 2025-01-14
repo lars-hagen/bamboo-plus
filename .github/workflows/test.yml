@@ -1,10 +1,11 @@
-name: Test
+name: Test Build & Extension
 
 on:
-  pull_request:
-    branches: [ main ]
   push:
-    branches: [ dev, main ]
+    branches: [ main, dev-new ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [ main ]
   workflow_call:
 
 jobs:
@@ -14,49 +15,40 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      # Test build script
-      - name: Test Build Script
+      - name: Test Build
         run: |
           chmod +x build.sh
-          ./build.sh dev test-version
+          ./build.sh dev
           
-          # Verify build artifacts exist
-          if [ -z "$(ls bamboo-plus-v*.zip 2>/dev/null)" ]; then
-            echo "❌ Build failed: ZIP file not created"
+          # Verify build artifacts
+          if [ ! -f "bamboo-plus-"*".zip" ]; then
+            echo "❌ Build failed: ZIP file not found"
             exit 1
           fi
-          if [ ! -f "bamboo-plus.user.js" ]; then
-            echo "❌ Build failed: Userscript not created"
-            exit 1
-          fi
-
-      # Test extension structure
-      - name: Test Extension Structure
-        run: |
-          # Check required files exist
-          required_files=("manifest.json" "background.js" "popup.html" "popup.js" "bamboo-plus.user.js")
-          for file in "${required_files[@]}"; do
-            if [ ! -f "extension/$file" ]; then
-              echo "❌ Missing required file: $file"
-              exit 1
-            fi
-          done
           
-          # Validate manifest.json
-          if ! jq empty extension/manifest.json; then
-            echo "❌ Invalid manifest.json"
+          # Check extension structure
+          if [ ! -f "build/manifest.json" ] || \
+             [ ! -f "build/bamboo-plus.user.js" ] || \
+             [ ! -f "build/background.js" ] || \
+             [ ! -f "build/popup.html" ] || \
+             [ ! -f "build/popup.js" ]; then
+            echo "❌ Build failed: Missing required files"
             exit 1
           fi
           
-          # Validate userscript metadata
-          if ! grep -q "@name" extension/bamboo-plus.user.js; then
-            echo "❌ Missing @name in userscript"
+          # Validate manifest.json
+          if ! jq empty build/manifest.json 2>/dev/null; then
+            echo "❌ Build failed: Invalid manifest.json"
             exit 1
           fi
-          if ! grep -q "@version" extension/bamboo-plus.user.js; then
-            echo "❌ Missing @version in userscript"
+          
+          # Check userscript metadata
+          if ! grep -q "@name.*Bamboo Plus" build/bamboo-plus.user.js || \
+             ! grep -q "@version" build/bamboo-plus.user.js || \
+             ! grep -q "@description" build/bamboo-plus.user.js; then
+            echo "❌ Build failed: Invalid userscript metadata"
             exit 1
-          fi 
+          fi
+          
+          echo "✅ Build and validation successful" 
