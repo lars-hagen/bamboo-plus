@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BambooHR Plus
 // @namespace    https://github.com/lars-hagen/bamboo-plus
-// @version      1.0.0-dev.17-dev.20250114.194326.3213584
+// @version      1.0.0-dev.18-dev.20250114.195234.094b592
 // @description  Enhanced BambooHR experience with improved UI and smart features
 // @author       Lars Hagen
 // @match        https://*.bamboohr.com/employees/timesheet/*
