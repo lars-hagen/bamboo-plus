@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BUILD_TYPE=${1:-dev}  # Default to dev build if not specified
-VERSION=${2:-$(grep '"version":' manifest.json | cut -d'"' -f4)}  # Use provided version or get from manifest
+VERSION=${2:-$(grep '"version":' extension/manifest.json | cut -d'"' -f4)}  # Use provided version or get from manifest
 
 if [ "$BUILD_TYPE" = "dev" ]; then
     # For dev builds: VERSION-dev.YYYYMMDD.HHMMSS.COMMIT_HASH
@@ -20,9 +20,7 @@ mkdir -p build
 cp -r extension/* build/
 
 # Update version in files
-sed -i '' "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" manifest.json
 sed -i '' "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" extension/manifest.json
-sed -i '' "s/@version.*/@version      ${VERSION}/" bamboo-plus.user.js
 sed -i '' "s/@version.*/@version      ${VERSION}/" extension/bamboo-plus.user.js
 
 # Create zip
