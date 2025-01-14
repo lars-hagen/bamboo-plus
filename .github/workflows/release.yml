@@ -19,13 +19,13 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Install dependencies
-        run: npm install --save-dev semantic-release @semantic-release/exec @semantic-release/github @semantic-release/git
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --save-dev semantic-release @semantic-release/exec @semantic-release/github @semantic-release/git
 
       - name: Release
         env:
