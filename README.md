@@ -28,6 +28,13 @@ For the latest development build with new features and fixes:
 3. Download the latest pre-release version
 4. Note: Development builds may be unstable
 
+## Contributing
+1. Fork the repository
+2. Create a feature branch from `dev`
+3. Make your changes
+4. Submit a pull request to the `dev` branch
+5. After review and testing, changes will be merged to `main` for release
+
 ## Features
 - Smart timesheet autofill with configurable defaults
 - Skip holidays and vacation days automatically
