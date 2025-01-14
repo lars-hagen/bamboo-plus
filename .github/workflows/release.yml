@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 jobs:
   release:
@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install -g semantic-release @semantic-release/exec @semantic-release/github
+          npm install -g semantic-release @semantic-release/exec @semantic-release/github @semantic-release/git
 
       - name: Release
         env:
