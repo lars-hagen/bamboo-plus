@@ -13,7 +13,7 @@ fi
 echo "Building version ${VERSION}..."
 
 # Validate userscript metadata
-if ! grep -q "@name\s*Bamboo Plus" extension/bamboo-plus.user.js || \
+if ! grep -q "@name.*Bamboo Plus" extension/bamboo-plus.user.js || \
    ! grep -q "@version" extension/bamboo-plus.user.js || \
    ! grep -q "@description" extension/bamboo-plus.user.js; then
     echo "❌ Build failed: Missing required userscript metadata"
@@ -27,9 +27,16 @@ mkdir -p build
 # Copy extension files
 cp -r extension/* build/
 
-# Update version in files
-sed -i "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" build/manifest.json
-sed -i "s/@version.*/@version      ${VERSION}/" build/bamboo-plus.user.js
+# Update version in files - handle both macOS and Linux sed
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS requires backup extension
+    sed -i '' "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" build/manifest.json
+    sed -i '' "s/@version.*/@version      ${VERSION}/" build/bamboo-plus.user.js
+else
+    # Linux doesn't need backup extension
+    sed -i "s/\"version\": \".*\"/\"version\": \"${VERSION}\"/" build/manifest.json
+    sed -i "s/@version.*/@version      ${VERSION}/" build/bamboo-plus.user.js
+fi
 
 # Copy userscript to root for semantic-release
 cp build/bamboo-plus.user.js ./bamboo-plus.user.js
