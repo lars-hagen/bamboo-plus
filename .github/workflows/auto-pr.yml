@@ -64,4 +64,4 @@ jobs:
           branch: dev
           base: main
           draft: true
-          delete-branch: false 
+          delete-branch: false
