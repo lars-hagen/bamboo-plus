@@ -1,0 +1,22 @@
+name: Mark PR Ready
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "PR Title"
+        required: false
+        default: "chore: release new version"
+
+jobs:
+  ready-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Draft PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: ${{ github.event.inputs.title }}
+          branch: dev
+          base: main
+          draft: false 

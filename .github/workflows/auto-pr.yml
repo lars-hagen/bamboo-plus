@@ -1,0 +1,32 @@
+name: Maintain Draft PR
+
+on:
+  push:
+    branches: [ dev ]
+
+jobs:
+  update-pr:
+    name: Update Draft PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create or Update Draft PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "[Draft] Dev → Main"
+          body: |
+            ## Development Changes
+            This is a permanent draft PR tracking changes from dev to main.
+            
+            - ✅ Merge when ready to release
+            - 🚫 Do not close this PR
+            - 🔄 Updates automatically with dev changes
+          branch: dev
+          base: main
+          draft: true
+          delete-branch: false 
