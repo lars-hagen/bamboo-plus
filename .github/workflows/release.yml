@@ -22,7 +22,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          cache: 'npm2'
+          node-version: "lts/*"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install --save-dev semantic-release @semantic-release/exec @semantic-release/github @semantic-release/git
