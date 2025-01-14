@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 jobs:
   test:
@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      issues: write
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,26 +32,41 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Determine version
-        id: version
+      - name: Determine version and build
+        id: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION=$(npx semantic-release --dry-run | grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+' || echo '')
-          if [ -z "$VERSION" ]; then
-            echo "No new version to release"
-            exit 0
+          # Get next version without creating commits
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            # For main branch - get semantic version
+            VERSION=$(npx semantic-release --dry-run | grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+' || echo "0.0.1")
+          else
+            # For dev branch - use timestamp-based version
+            BASE_VERSION=$(npx semantic-release --dry-run | grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+' || echo "0.0.1")
+            TIMESTAMP=$(date +%Y%m%d.%H%M%S)
+            COMMIT_HASH=$(git rev-parse --short HEAD)
+            VERSION="${BASE_VERSION}-dev.${TIMESTAMP}.${COMMIT_HASH}"
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Build Release
-        if: steps.version.outputs.version != ''
-        run: ./build.sh prod ${{ steps.version.outputs.version }}
+          
+          # Build with determined version
+          ./build.sh ${GITHUB_REF##*/} $VERSION
 
       - name: Create Release
-        if: steps.version.outputs.version != ''
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ steps.version.outputs.version }}
-          files: bamboo-plus-*.zip
-          generate_release_notes: true 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${{ steps.release.outputs.version }}
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            # Create regular release for main branch
+            gh release create v$VERSION bamboo-plus-*.zip \
+              --title "v$VERSION" \
+              --generate-notes
+          else
+            # Create prerelease for dev branch
+            gh release create v$VERSION bamboo-plus-*.zip \
+              --prerelease \
+              --title "Development Build v$VERSION" \
+              --notes "This is a development build from the dev branch. Use at your own risk."
+          fi 
