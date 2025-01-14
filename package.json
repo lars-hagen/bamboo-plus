@@ -1,0 +1,26 @@
+{
+  "name": "autobamboohr",
+  "version": "1.0.0",
+  "description": "Enhanced BambooHR experience with improved UI and smart features.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lars-hagen/bamboo-plus.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lars-hagen/bamboo-plus/issues"
+  },
+  "homepage": "https://github.com/lars-hagen/bamboo-plus#readme",
+  "devDependencies": {
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.1",
+    "semantic-release": "^24.2.1"
+  }
+}
