@@ -14,18 +14,53 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Get commit info
+        id: commits
+        run: |
+          LAST_MERGE=$(git log --merges -n 1 --format="%H" origin/main)
+          COMMITS=$(git log --no-merges --pretty=format:"- %s (%h)" $LAST_MERGE..HEAD)
+          echo "commits<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMITS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          # Get semantic type of changes
+          FEAT_COUNT=$(echo "$COMMITS" | grep -c "^- feat" || true)
+          FIX_COUNT=$(echo "$COMMITS" | grep -c "^- fix" || true)
+          BREAKING=$(echo "$COMMITS" | grep -c "^- [a-zA-Z]*!:" || true)
+          
+          if [ "$BREAKING" -gt 0 ]; then
+            TYPE="major"
+          elif [ "$FEAT_COUNT" -gt 0 ]; then
+            TYPE="minor"
+          elif [ "$FIX_COUNT" -gt 0 ]; then
+            TYPE="patch"
+          else
+            TYPE="chore"
+          fi
+          echo "change_type=$TYPE" >> $GITHUB_OUTPUT
+
       - name: Create or Update Draft PR
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "[Draft] Dev → Main"
+          title: "[${{ steps.commits.outputs.change_type }}] Development Changes"
           body: |
-            ## Development Changes
-            This is a permanent draft PR tracking changes from dev to main.
+            ## 🚀 Development Changes
             
-            - ✅ Merge when ready to release
-            - 🚫 Do not close this PR
-            - 🔄 Updates automatically with dev changes
+            ### 📝 Commits since last merge
+            ${{ steps.commits.outputs.commits }}
+            
+            ### 📋 Summary
+            - Type: `${{ steps.commits.outputs.change_type }}`
+            - Status: Draft
+            - Target: `main`
+            
+            ### 🔍 Review Instructions
+            1. ✅ Review the changes above
+            2. 🧪 Check that tests pass
+            3. 📦 When ready to release, use the "Mark PR Ready" workflow
+            
+            > 🔄 This PR updates automatically with new commits to dev
           branch: dev
           base: main
           draft: true
