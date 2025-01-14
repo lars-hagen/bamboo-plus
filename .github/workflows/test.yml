@@ -1,0 +1,61 @@
+name: Test
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ dev, main ]
+
+jobs:
+  test:
+    name: Test Build & Extension
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Test build script
+      - name: Test Build Script
+        run: |
+          chmod +x build.sh
+          ./build.sh dev test-version
+          
+          # Verify build artifacts exist
+          if [ ! -f "bamboo-plus-v*.zip" ]; then
+            echo "❌ Build failed: ZIP file not created"
+            exit 1
+          fi
+          if [ ! -f "bamboo-plus.user.js" ]; then
+            echo "❌ Build failed: Userscript not created"
+            exit 1
+          fi
+
+      # Test extension structure
+      - name: Test Extension Structure
+        run: |
+          # Check required files exist
+          required_files=("manifest.json" "background.js" "popup.html" "popup.js" "bamboo-plus.user.js")
+          for file in "${required_files[@]}"; do
+            if [ ! -f "extension/$file" ]; then
+              echo "❌ Missing required file: $file"
+              exit 1
+            fi
+          done
+          
+          # Validate manifest.json
+          if ! jq empty extension/manifest.json; then
+            echo "❌ Invalid manifest.json"
+            exit 1
+          fi
+          
+          # Validate userscript metadata
+          if ! grep -q "@name" extension/bamboo-plus.user.js; then
+            echo "❌ Missing @name in userscript"
+            exit 1
+          fi
+          if ! grep -q "@version" extension/bamboo-plus.user.js; then
+            echo "❌ Missing @version in userscript"
+            exit 1
+          fi 
